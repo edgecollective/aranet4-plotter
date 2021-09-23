@@ -212,43 +212,17 @@ function makeFit(docid,data,co2_ambient,start,end,main_docid) {
 
         document.getElementById('linear').innerHTML = "<b>slope</b>: "+slopeString+"; <b>intercept</b>: "+interceptString+"; <b>R2</b>:"+r2String;
         
-        //console.log(value_vs_time);
-
-        /*
-        var chartcolor = "blue";
-        console.log(chartcolor);
-        var dataset = {
-            "data":value_vs_time,
-            "label":"Node_"+node_id,
-            //"label":feed_shortname,
-            "borderColor": chartcolor,
-            "fill":true,
-            //"spanGaps":false,
-            //"showLine":false,
-            "lineTension":0
-        }
-        datasets.push(dataset);
-        */
-        
-        //plot on original dataset
-        
         var chartcolor = "blue";
         var tofit_set = {
             type: 'scatter',
             data:tofit_vs_time,
             label:"ln[(co2-co2_ambient)/co2[t=0]-co2_ambient)]",
-            //"label":feed_shortname,
             borderColor: chartcolor,
             fill:true,
-            //"spanGaps":false,
-            //"showLine":false,
-            //lineTension:0
+            
         }
         datasets.push(tofit_set);
 
-        //f1 = [0,intercept];
-
-        //t_final = tofit_data[limit -1][0]; 
 
         fit_vs_time.push({"x":ti_hours,"y":intercept});
         fit_vs_time.push({"x":tf_hours,"y":slope*tf_hours+intercept});
@@ -298,7 +272,6 @@ function makeFit(docid,data,co2_ambient,start,end,main_docid) {
                 var exp_arg = slope*current_time_hours;
                 var amplitude = y_initial-co2_ambient;
                 var exp_fit = amplitude*Math.exp(exp_arg)+co2_ambient+amplitude*intercept;
-                //var exp_fit = amplitude*Math.exp(exp_arg)+co2_ambient;
 
                 expfit_vs_time.push({"x":localtime,"y":exp_fit});
             }
@@ -317,19 +290,15 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
             var datasets =[];
             
 
-            //console.log(value_vs_time);
 
             var chartcolor = "blue";
             var value_set = {
                 type: 'scatter',
                 data:co2_vs_time,
                 label:"CO2 PPM",
-                //"label":feed_shortname,
                 borderColor: chartcolor,
                 fill:true,
-                //"spanGaps":false,
-                //"showLine":false,
-                //lineTension:0
+        
             }
             datasets.push(value_set);
 
@@ -338,12 +307,8 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
                     data: {
                     datasets: datasets
                     },
-                    // Configuration options go here
                     options: {
-                        /*title: {
-                            display: true,
-                            text: param_key
-                        },*/
+                
                         tooltips: {
                             mode: 'single',
                             callbacks: {
@@ -381,7 +346,7 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
                     });
 
 
-           var canvas = document.getElementById(docid);
+           var canvas = document.getElementById('myChart');
            var overlay = document.getElementById('overlay');
            var startIndex = 0;
            overlay.width = canvas.width;
@@ -440,7 +405,7 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
              //console.log(doc_id);
              makeFit('myFit',co2_vs_time,co2_ambient,startIndex,points[0]._index,docid);
              
-             //console.log('implement filter between ' + options.data.labels[startIndex] + ' and ' + options.data.labels[points[0]._index]);  
+          
            });
 
            
