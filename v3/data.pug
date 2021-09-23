@@ -1,0 +1,106 @@
+doctype html
+html
+    head
+        meta(charset='UTF-8')
+        title belfast.pvos.org
+        link(rel='stylesheet', href='/style.css')
+        //script(src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0')
+        //script(src='js/dist/Char.min.js')
+        script(src='https://cdn.jsdelivr.net/npm/luxon@1.25.0/build/global/luxon.min.js')
+        script(src='https://cdn.jsdelivr.net/npm/chart.js@2.9.3')
+        //script(src='https://cdn.jsdelivr.net/npm/luxon@1.22.1')
+        script(src='https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1')
+        script(src='/js/qrcode.min.js')
+
+<a href="/">Back to home</a>
+
+<hr>
+
+//h2 Feed: "#{feed_pubkey}"
+
+//li.boxsmaller <b>Feed Name:</b> "#{feed_name}"
+li.boxsmaller <b>Feed Public Key:</b> #{feed_pubkey}
+li.boxsmaller <b>Feed Home Page:</b> <a href="/data/#{feed_pubkey}">http://#{base_url}/data/#{feed_pubkey}</a>
+li.boxsmaller <b>Download All Feed Data</b>: <a href="/data/#{feed_pubkey}/csv/">CSV</a> | <a href="/data/#{feed_pubkey}/json/">JSON</a>
+li.boxsmaller <b>Download Latest Datapoint Only</b>: <a href="/data/#{feed_pubkey}/latest/">JSON</a>
+
+p.boxsmaller <b>QR Code</b> with link to this feed (download: <a href="#" download="qrcode.png" id="downloadlink">qrcode_feed_#{feed_pubkey}.png</a>):
+canvas(id='qrcode')
+
+canvas(id='myChart' height='100px')
+
+
+    script.
+        QRCode.toCanvas(document.getElementById('qrcode'), 'http://#{base_url}/data/#{feed_pubkey}', function (error) {
+        if (error) console.error(error)
+        console.log('success!');
+        })
+    
+    script.
+        const canvas = document.getElementById("qrcode");
+        const canvasdata = canvas.toDataURL();
+        const link = document.getElementById("downloadlink");
+        link.href = canvasdata;
+        link.download = "feed_#{feed_pubkey}.png";
+
+    script.
+        var fetchString = '/data/#{feed_pubkey}/json?limit='.concat(!{JSON.stringify(limit)}).concat('&plot_param=').concat(!{JSON.stringify(plot_param)});
+        //var fetch_url = !{JSON.stringify(plot_param)}
+        console.log(fetchString);
+
+        //fetch(`/data/#{feed_pubkey}/json/`)
+        fetch(fetchString)
+        .then(response => response.json())
+        .then(bdata => {
+            /*
+            var given_limit = parseInt(#{limit});
+            var data_limit = data.length;
+            if (given_limit < data.length) {
+                data_limit = given_limit;
+            }
+            */
+            var data = bdata.data;
+            var co2_vs_time = [];
+            for(var i = 0; i < data.length; i++) {
+            var timeutc = data[i].timestamp;
+            var parameters=data[i].parameters;
+            var thisco2 = parameters.#{plot_param};
+            var localtime = luxon.DateTime.fromISO(timeutc).toLocal().toString();
+            console.log(localtime);
+             
+            //console.log(luxtime);
+            co2_vs_time.push({"t":localtime,"y":thisco2})
+            //console.log(luxon.DateTime.fromISO(bdata[i].created));
+            }
+            //console.log(co2_vs_time);
+            
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+            datasets: [{
+            label: !{JSON.stringify(plot_param)},
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: co2_vs_time
+            }]
+            },
+            // Configuration options go here
+            options: {
+            scales: {
+            xAxes: [{
+            type: 'time',
+            distribution: 'linear',
+            ticks: {
+            major: {
+            enabled: true, // <-- This is the key line
+            fontStyle: 'bold', //You can also style these values differently
+            fontSize: 14, //You can also style these values differently
+            },
+            },
+            }],
+            },
+            zone: "America/NewYork"
+            }
+            });
+        });

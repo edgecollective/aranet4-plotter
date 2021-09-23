@@ -1,0 +1,193 @@
+<html>
+  <head>
+    <meta charset="utf-8 /> 
+    <link rel="stylesheet" href="./style.css" />
+    <script src='https://cdn.jsdelivr.net/npm/luxon@1.25.0/build/global/luxon.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/chart.js@2.9.3'></script>
+    <script src='https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1'></script>
+    <script src='js/bayou.js'></script>
+  </head>
+<body>
+<input type="file" id="fileinput" />
+
+
+<canvas id="overlay" width="200" height="50" style="position:absolute;pointer-events:none;"></canvas>
+
+<canvas id="myChart" width="200" height="50"></canvas>
+
+<canvas id="exponential" width="200" height="50"></canvas>
+
+<canvas id="myFit" width="200" height="50"></canvas>
+
+<script>
+  var ctx = document.getElementById('myChart').getContext('2d');
+        ctx.canvas.width  = 300;
+        ctx.canvas.height = 100;
+        ctx = document.getElementById('overlay').getContext('2d');
+        ctx.canvas.width  = 300;
+        ctx.canvas.height = 100;
+        ctx = document.getElementById('exponential').getContext('2d');
+        ctx.canvas.width  = 300;
+        ctx.canvas.height = 100;
+        ctx = document.getElementById('myFit').getContext('2d');
+        ctx.canvas.width  = 300;
+        ctx.canvas.height = 100;
+        
+</script>
+<script>
+  function csvJSON(csv){
+
+var lines=csv.split("\n");
+
+var result = [];
+
+// NOTE: If your columns contain commas in their values, you'll need
+// to deal with those before doing the next step 
+// (you might convert them to &&& or something, then covert them back later)
+// jsfiddle showing the issue https://jsfiddle.net/
+//var headers=lines[0].split(",");
+var headers =["Time","CO2","Temp","Humid","Press"];
+for(var i=1;i<lines.length-1;i++){
+
+    var obj = {};
+    var currentline=lines[i].split(",");
+
+    for(var j=0;j<headers.length;j++){
+        obj[headers[j]] = currentline[j];
+    }
+
+    result.push(obj);
+
+}
+//console.log(result);
+
+return result; //JavaScript object
+//return JSON.stringify(result); //JSON
+
+}
+</script>
+<script>
+  function convertFromStringToDate(responseDate) {
+    let dateComponents = responseDate.split('T');
+    let datePieces = dateComponents[0].split("-");
+    let timePieces = dateComponents[1].split(":");
+    return(new Date(datePieces[2], (datePieces[1] - 1), datePieces[0],timePieces[0], timePieces[1], timePieces[2]))
+}
+</script>
+
+<script>
+  function readSingleFile(evt) {
+    var f = evt.target.files[0]; 
+    if (f) {
+
+
+      var r = new FileReader();
+      
+      r.onload = function(e) { 
+          var contents = e.target.result;
+          //document.write("File Uploaded! <br />" + "name: " + f.name + "<br />" + "content: " + contents + "<br />" + "type: " + f.type + "<br />" + "size: " + f.size + " bytes <br />");
+
+          // try the parser:
+          var p = csvJSON(contents);
+          //console.log(p);
+          var in_json = csvJSON(contents);
+
+          var feed_pubkey = "2323";
+          var plot_param = "co2";
+          var limit = 100;
+          var node_id=0;
+          var co2_ambient = 412;
+
+          var co2_vs_time = [];
+
+          for (var i =0; i<p.length;i++) {
+            var thisItem = p[i];
+            var co2StrDouble = thisItem['CO2'];
+            var timeutc = thisItem['Time'];
+            var co2Str = co2StrDouble.replace(/['"]+/g, '');
+              //console.log(parseInt(co2Str));
+              var co2 = parseInt(co2Str);
+
+              var luxtime = luxon.DateTime.fromFormat(timeutc, "M/d/yyyy h:mm:ss a");
+
+              //console.log(luxtime.toString());
+  
+              co2_vs_time.push({"t":luxtime,"y":co2})
+            }
+
+          makeNodeChart('myChart',co2_vs_time,co2_ambient);
+
+
+
+          /*var co2_vs_time = [];
+
+          for (var i =0; i<p.length;i++) {
+            var thisItem = p[i];
+            var co2StrDouble = thisItem['CO2'];
+            var timeutc = thisItem['Time'];
+            var co2Str = co2StrDouble.replace(/['"]+/g, '');
+              //console.log(parseInt(co2Str));
+              var co2 = parseInt(co2Str);
+
+              var luxtime = luxon.DateTime.fromFormat(timeutc, "M/d/yyyy h:mm:ss a");
+
+              //console.log(luxtime.toString());
+  
+              co2_vs_time.push({"t":luxtime,"y":co2})
+            }
+            //console.log(co2_vs_time);
+            
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+            datasets: [{
+            label: "CO2",
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: co2_vs_time
+            }]
+            },
+            // Configuration options go here
+            options: {
+            scales: {
+            xAxes: [{
+            type: 'time',
+            distribution: 'linear',
+            ticks: {
+            major: {
+            enabled: true, // <-- This is the key line
+            fontStyle: 'bold', //You can also style these values differently
+            fontSize: 14, //You can also style these values differently
+            },
+            },
+            }],
+            },
+            zone: "America/NewYork"
+            }
+            });
+
+            */
+
+          //console.log(p[0]);
+            /*
+          document.write("File Uploaded! <br />" + "name: " + f.name + "<br />" + "type: " + f.type + "<br />" + "size: " + f.size + " bytes <br />" + "content: <br />");
+
+          var lines = contents.split("\n"), output = [];
+          for (var i=0; i<lines.length; i++){
+            output.push("<tr><td>" + lines[i].split(",").join("</td><td>") + "</td></tr>");
+          }
+          output = "<table>" + output.join("") + "</table>";
+          document.write(output);
+          */
+     }
+      r.readAsText(f);
+      //document.write(output);
+    } else { 
+      alert("Failed to load file");
+    }
+  }
+  document.getElementById('fileinput').addEventListener('change', readSingleFile);
+</script>
+</body>
+</html>
