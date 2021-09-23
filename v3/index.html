@@ -1,39 +1,49 @@
 <html>
   <head>
-    <meta charset="utf-8 /> 
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="style.css">
     <script src='https://cdn.jsdelivr.net/npm/luxon@1.25.0/build/global/luxon.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/chart.js@2.9.3'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/regression/2.0.1/regression.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1'></script>
     <script src='js/bayou.js'></script>
+
   </head>
 <body>
+
 <input type="file" id="fileinput" />
 
 
-<canvas id="overlay" width="200" height="50" style="position:absolute;pointer-events:none;"></canvas>
+<canvas id="overlay" width="300" height="50" style="position:absolute;pointer-events:none;"></canvas>
 
-<canvas id="myChart" width="200" height="50"></canvas>
+<canvas id="myChart" width="300" height="50"></canvas>
 
-<canvas id="exponential" width="200" height="50"></canvas>
+<p id="fitval"><b>ACH</b>:</p>
 
-<canvas id="myFit" width="200" height="50"></canvas>
+<canvas id="exponential" width="300" height="50"></canvas>
 
+<p id="linear"><b>slope</b>; <b>intercept</b>; <b>R2</b></p>
+
+<canvas id="myFit" width="300" height="50"></canvas>
+
+<!--
 <script>
-  var ctx = document.getElementById('myChart').getContext('2d');
-        ctx.canvas.width  = 300;
-        ctx.canvas.height = 100;
-        ctx = document.getElementById('overlay').getContext('2d');
-        ctx.canvas.width  = 300;
-        ctx.canvas.height = 100;
-        ctx = document.getElementById('exponential').getContext('2d');
-        ctx.canvas.width  = 300;
-        ctx.canvas.height = 100;
-        ctx = document.getElementById('myFit').getContext('2d');
-        ctx.canvas.width  = 300;
-        ctx.canvas.height = 100;
-        
+  var c = document.getElementById('myChart')
+      c.width  = 200;
+      c.height = 50;
+      var d = document.getElementById('overlay')
+      c.width  = 200;
+      c.height = 50;
+      var e = document.getElementById('exponential')
+      c.width  = 200;
+      c.height = 50;
+      var f = document.getElementById('myFit')
+      c.width  = 200;
+      c.height = 50;
+
 </script>
+-->
+
+
 <script>
   function csvJSON(csv){
 
@@ -64,14 +74,6 @@ for(var i=1;i<lines.length-1;i++){
 return result; //JavaScript object
 //return JSON.stringify(result); //JSON
 
-}
-</script>
-<script>
-  function convertFromStringToDate(responseDate) {
-    let dateComponents = responseDate.split('T');
-    let datePieces = dateComponents[0].split("-");
-    let timePieces = dateComponents[1].split(":");
-    return(new Date(datePieces[2], (datePieces[1] - 1), datePieces[0],timePieces[0], timePieces[1], timePieces[2]))
 }
 </script>
 
@@ -117,69 +119,6 @@ return result; //JavaScript object
 
           makeNodeChart('myChart',co2_vs_time,co2_ambient);
 
-
-
-          /*var co2_vs_time = [];
-
-          for (var i =0; i<p.length;i++) {
-            var thisItem = p[i];
-            var co2StrDouble = thisItem['CO2'];
-            var timeutc = thisItem['Time'];
-            var co2Str = co2StrDouble.replace(/['"]+/g, '');
-              //console.log(parseInt(co2Str));
-              var co2 = parseInt(co2Str);
-
-              var luxtime = luxon.DateTime.fromFormat(timeutc, "M/d/yyyy h:mm:ss a");
-
-              //console.log(luxtime.toString());
-  
-              co2_vs_time.push({"t":luxtime,"y":co2})
-            }
-            //console.log(co2_vs_time);
-            
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-            datasets: [{
-            label: "CO2",
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: co2_vs_time
-            }]
-            },
-            // Configuration options go here
-            options: {
-            scales: {
-            xAxes: [{
-            type: 'time',
-            distribution: 'linear',
-            ticks: {
-            major: {
-            enabled: true, // <-- This is the key line
-            fontStyle: 'bold', //You can also style these values differently
-            fontSize: 14, //You can also style these values differently
-            },
-            },
-            }],
-            },
-            zone: "America/NewYork"
-            }
-            });
-
-            */
-
-          //console.log(p[0]);
-            /*
-          document.write("File Uploaded! <br />" + "name: " + f.name + "<br />" + "type: " + f.type + "<br />" + "size: " + f.size + " bytes <br />" + "content: <br />");
-
-          var lines = contents.split("\n"), output = [];
-          for (var i=0; i<lines.length; i++){
-            output.push("<tr><td>" + lines[i].split(",").join("</td><td>") + "</td></tr>");
-          }
-          output = "<table>" + output.join("") + "</table>";
-          document.write(output);
-          */
      }
       r.readAsText(f);
       //document.write(output);

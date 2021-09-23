@@ -1,136 +1,39 @@
 
 
+function makeNodeChartSubset(docid,data,co2_ambient,start,stop,expofit_vs_time) {
 
-function makeFit(docid,feed_pubkey,plot_param,limit,node_id,co2_ambient,start,end,main_docid) {
     
-    //var this_baseline = document.getElementById("baseline").innerHTML;
-    //var this_baseline = document.getElementById("new_baseline").value;
-    
-    //co2_ambient = parseInt(this_baseline);
-
-    //console.log("this_baseline:",this_baseline);
-
-    console.log("stuff:",docid,feed_pubkey,plot_param,limit,node_id);
-
-    console.log("co2_ambient:",co2_ambient);
-
-    const dataurl = '/data/'+feed_pubkey+'/json/'+node_id+'?limit='+limit;
-
-    //const dataurl = '/data/'+feed_pubkey+'/json/'+node_id;
-    
+    var canvas = document.getElementById(docid);
     var ctx = document.getElementById(docid).getContext('2d');
 
-    var main_ctx = document.getElementById(main_docid).getContext('2d');
-
-    var colorBase = ["red","blue","green","purple","yellow"];
-
-    var y_initial;
-
-    fetch(dataurl)
-        .then(response => response.json())
-        .then(bdata => {
-
-            var data = bdata.data;
-
-            /*
-            if (limit > data.length) {
-                limit = data.length;
-            }
-            */
             
-            //console.log(unique_nodes);
-
             colors=[];
-
             var datasets =[];
-            var main_datasets = [];
-            
+            value_vs_time = [];
             subset_vs_time = [];
-            tofit_vs_time = [];
-            fit_vs_time = [];
-            tofit_data = [];
 
-            //co2_ambient = 420;
-
-            y_initial = data[start].parameters[plot_param];
-            t_initial_hours = luxon.DateTime.fromISO(data[start].timestamp).toLocal().toSeconds()/3600;
-
-            var tf_hours = 0;
-
-            var ti_hours = 0;
-            
-            for (var i = start; i< end; i++) {
-                var params=data[i].parameters;
-                var timeutc = data[i].timestamp;
-                var localtime = luxon.DateTime.fromISO(timeutc).toLocal().toString();
-                var t_current_hours = luxon.DateTime.fromISO(timeutc).toLocal().toSeconds()/3600;
-                var t_delta_hours = t_current_hours-t_initial_hours;
-                tf_hours = t_delta_hours;
-                
-                var plot_value = params[plot_param];
-
-                if (i==start) {
-                    ti_hours=t_delta_hours;
+            for (var i = 0; i< data.length; i++) {
+                //var params=data[i].parameters;
+                var timeutc = data[i].t;
+                //var localtime = luxon.DateTime.fromISO(timeutc).toLocal().toString();
+                //var plot_value = params[plot_param];
+                value_vs_time.push({"x":timeutc,"y":data[i].y});
+                if ((i>=start) && (i<stop)) {
+                    subset_vs_time.push({"x":timeutc,"y":data[i].y});
                 }
-                subset_vs_time.push({"x":localtime,"y":plot_value});
-                
-                
-                var tofit_value = Math.log((plot_value-co2_ambient)/(y_initial-co2_ambient));
-
-                tofit_vs_time.push({"x":t_delta_hours,"y":tofit_value});
-
-                tofit_data.push([t_delta_hours,tofit_value])
-                //var fit_value = tofit_value*1.1;
-
-
-                //fit_vs_time.push({"x":i,"y":fit_value});
-
             }
 
-            const result = regression.linear(tofit_data,{ precision: 4 });
-            console.log("result:",result.equation);
-            var slope = result.equation[0];
-            var intercept = result.equation[1];
-            var r2 = result.r2;
-
-            var r2String = r2.toFixed(2).toString();
-
-            var ACHString = (-1*slope.toFixed(2)).toString();
-
-            var slopeString = (slope.toFixed(2)).toString();
-            var interceptString = (intercept.toFixed(2)).toString();
+            console.log(value_vs_time);
 
             
-            document.getElementById('fitval').innerHTML = "<b>ACH</b>: "+ACHString;
 
+            
 
-            document.getElementById('linear').innerHTML = "<b>slope</b>: "+slopeString+"; <b>intercept</b>: "+interceptString+"; <b>R2</b>:"+r2String;
-            
-            //console.log(value_vs_time);
-
-            /*
-            var chartcolor = "blue";
-            console.log(chartcolor);
-            var dataset = {
-                "data":value_vs_time,
-                "label":"Node_"+node_id,
-                //"label":feed_shortname,
-                "borderColor": chartcolor,
-                "fill":true,
-                //"spanGaps":false,
-                //"showLine":false,
-                "lineTension":0
-            }
-            datasets.push(dataset);
-            */
-            
-            //plot on original dataset
-            
-            var chartcolor = "blue";
-            var tofit_set = {
+            var chartcolor = "green";
+            var value_set = {
                 type: 'scatter',
-                data:tofit_vs_time,
-                label:"ln[(co2-co2_ambient)/co2[t=0]-co2_ambient)]",
+                data:value_vs_time,
+                label:"CO2 PPM",
                 //"label":feed_shortname,
                 borderColor: chartcolor,
                 fill:true,
@@ -138,109 +41,275 @@ function makeFit(docid,feed_pubkey,plot_param,limit,node_id,co2_ambient,start,en
                 //"showLine":false,
                 //lineTension:0
             }
-            datasets.push(tofit_set);
-
-            //f1 = [0,intercept];
-
-            //t_final = tofit_data[limit -1][0]; 
-
-            fit_vs_time.push({"x":ti_hours,"y":intercept});
-            fit_vs_time.push({"x":tf_hours,"y":slope*tf_hours+intercept});
-
-            console.log(fit_vs_time);
+            datasets.push(value_set);
 
             var chartcolor = "red";
-            var fit_set = {
-                "type": "line",
-                "data":fit_vs_time,
-                "label":"linear fit",
+            var subset_set = {
+                type: 'scatter',
+                data:subset_vs_time,
+                label:"Event",
                 //"label":feed_shortname,
-                "borderColor": chartcolor,
-                "fill":false,
+                borderColor: chartcolor,
+                fill:true,
+                pointBackgroundColor: "red", // wite point fill
+                pointBorderWidth: 1 // point border width
                 //"spanGaps":false,
                 //"showLine":false,
-                "lineTension":0,
-                
+                //lineTension:0
             }
-            datasets.push(fit_set);
+            datasets.push(subset_set);
 
-            
+            var chartcolor = "purple";
+            var exp_set = {
+                type: 'line',
+                data:expofit_vs_time,
+                label:"Fit",
+                //"label":feed_shortname,
+                borderColor: chartcolor,
+                fill:true,
+                pointRadius: 0
+                //"spanGaps":false,
+                //"showLine":false,
+                //lineTension:0
+            }
+            datasets.push(exp_set);
+
             var chart = new Chart(ctx, {
-                type: 'scatter',
-                data: {
-                datasets: datasets
-                },
-                options: {
+                    type: 'line',
+                    data: {
+                    datasets: datasets
+                    },
+                    // Configuration options go here
+                    options: {
+                        /*title: {
+                            display: true,
+                            text: param_key
+                        },*/
+                        tooltips: {
+                            mode: 'single',
+                            callbacks: {
+                                afterBody: (data) => {
+                                    if(data && data[0])
+                                    selectedPoint = data[0];
+                                    return [''];
+                                }
+                            }
+                        },
+                        legend: {
+                            labels: {
+                                fontStyle: 'bold', //You can also style these values differently
+                            }
+                        },
                     scales: {
-                        xAxes: [{
-                            display:true,
-                            labelString: "hours"
-                        }]
+                    xAxes: [{
+                    type: 'time',
+                    distribution: 'linear',
+                    ticks: {
+                    major: {
+                    enabled: true, // <-- This is the key line
+                    fontStyle: 'bold', //You can also style these values differently
+                    fontSize: 14, //You can also style these values differently
+                    },
+                    },
+                    }],
+                    yAxes: [{
+                        display:true,
+                        labelString: "co2"
+                    }]
+                    },
+                    zone: "America/NewYork"
                     }
-                }
-                });
-            
-            
-                // add the exponential fit
-
-                expfit_vs_time=[];
-
-                for (var i=0;i<subset_vs_time.length;i++) {
-                   
-                    var current_time_hours = tofit_vs_time[i].x;
-                    var localtime = subset_vs_time[i].x;
-                    var exp_arg = slope*current_time_hours;
-                    var amplitude = y_initial-co2_ambient;
-                    var exp_fit = amplitude*Math.exp(exp_arg)+co2_ambient+amplitude*intercept;
-                    //var exp_fit = amplitude*Math.exp(exp_arg)+co2_ambient;
-
-                    expfit_vs_time.push({"x":localtime,"y":exp_fit});
-                }
-                /*
-                for (var i = start; i< end; i++) {
-                    var params=data[i].parameters;
-                    var timeutc = data[i].timestamp;
-                    var localtime = luxon.DateTime.fromISO(timeutc).toLocal().toString();
-                    
-                    var exp_fit = y_initial*np.exp(exp_arg)+co2_outside+amplitude*intercept
-
-                    value_vs_time.push({"x":localtime,"y":plot_value});
-                    var plot_value = params[plot_param];
-    
-                    if (i==start) {
-                        ti_hours=t_delta_hours;
-                    }
-                    subset_vs_time.push({"x":localtime,"y":plot_value});
-                    
-                    
-                    var tofit_value = Math.log((plot_value-co2_ambient)/(y_initial-co2_ambient));
-    
-                    tofit_vs_time.push({"x":t_delta_hours,"y":tofit_value});
-    
-                    tofit_data.push([t_delta_hours,tofit_value])
-                    //var fit_value = tofit_value*1.1;
-    
-    
-                    //fit_vs_time.push({"x":i,"y":fit_value});
-    
-                }
-                */
-
-
-            makeNodeChartSubset('exponential',feed_pubkey,plot_param,limit,node_id,co2_ambient,start,end,expfit_vs_time);
-
+                    });
 
             
+
+}
+
+
+function makeFit(docid,data,co2_ambient,start,end,main_docid) {
+    
+    
+    var ctx = document.getElementById(docid).getContext('2d');
+
+    var main_ctx = document.getElementById("myChart").getContext('2d');
+
+    var colorBase = ["red","blue","green","purple","yellow"];
+
+    var y_initial;
+
+
+        colors=[];
+
+        var datasets =[];
+        var main_datasets = [];
         
-            //chart.options.scales.yAxes[ 0 ].scaleLabel.labelString = "New Label";
+        subset_vs_time = [];
+        tofit_vs_time = [];
+        fit_vs_time = [];
+        tofit_data = [];
 
-            //console.log(bdata);
-        });
+        //co2_ambient = 420;
+        console.log(data);
+
+        y_initial = data[start]['y'];
+        console.log('y_initial');
+        console.log(y_initial);
+
+        t_initial_hours = data[start]['t'].toSeconds()/3600;
+        console.log("out:");
+        
+        console.log(y_initial);
+        console.log(t_initial_hours);
+
+        var tf_hours = 0;
+
+        var ti_hours = 0;
+        
+        for (var i = start; i< end; i++) {
+            //var params=data[i].parameters;
+            var timeutc = data[i].t;
+            //var localtime = luxon.DateTime.fromISO(timeutc).toLocal().toString();
+            var t_current_hours = timeutc.toSeconds()/3600;
+            var t_delta_hours = t_current_hours-t_initial_hours;
+            tf_hours = t_delta_hours;
+            
+            //var plot_value = params[plot_param];
+
+            if (i==start) {
+                ti_hours=t_delta_hours;
+            }
+            subset_vs_time.push({"x":timeutc,"y":data[i].y});
+            
+            
+            var tofit_value = Math.log((data[i].y-co2_ambient)/(y_initial-co2_ambient));
+
+            tofit_vs_time.push({"x":t_delta_hours,"y":tofit_value});
+
+            tofit_data.push([t_delta_hours,tofit_value])
+            //var fit_value = tofit_value*1.1;
+
+
+            //fit_vs_time.push({"x":i,"y":fit_value});
+
+        }
+
+        const result = regression.linear(tofit_data,{ precision: 4 });
+        console.log("result:",result.equation);
+        var slope = result.equation[0];
+        var intercept = result.equation[1];
+        var r2 = result.r2;
+
+        var r2String = r2.toFixed(2).toString();
+
+        var ACHString = (-1*slope.toFixed(2)).toString();
+
+        var slopeString = (slope.toFixed(2)).toString();
+        var interceptString = (intercept.toFixed(2)).toString();
+
+        
+        document.getElementById('fitval').innerHTML = "<b>ACH</b>: "+ACHString;
+
+
+        document.getElementById('linear').innerHTML = "<b>slope</b>: "+slopeString+"; <b>intercept</b>: "+interceptString+"; <b>R2</b>:"+r2String;
+        
+        //console.log(value_vs_time);
+
+        /*
+        var chartcolor = "blue";
+        console.log(chartcolor);
+        var dataset = {
+            "data":value_vs_time,
+            "label":"Node_"+node_id,
+            //"label":feed_shortname,
+            "borderColor": chartcolor,
+            "fill":true,
+            //"spanGaps":false,
+            //"showLine":false,
+            "lineTension":0
+        }
+        datasets.push(dataset);
+        */
+        
+        //plot on original dataset
+        
+        var chartcolor = "blue";
+        var tofit_set = {
+            type: 'scatter',
+            data:tofit_vs_time,
+            label:"ln[(co2-co2_ambient)/co2[t=0]-co2_ambient)]",
+            //"label":feed_shortname,
+            borderColor: chartcolor,
+            fill:true,
+            //"spanGaps":false,
+            //"showLine":false,
+            //lineTension:0
+        }
+        datasets.push(tofit_set);
+
+        //f1 = [0,intercept];
+
+        //t_final = tofit_data[limit -1][0]; 
+
+        fit_vs_time.push({"x":ti_hours,"y":intercept});
+        fit_vs_time.push({"x":tf_hours,"y":slope*tf_hours+intercept});
+
+        console.log(fit_vs_time);
+
+        var chartcolor = "red";
+        var fit_set = {
+            "type": "line",
+            "data":fit_vs_time,
+            "label":"linear fit",
+            //"label":feed_shortname,
+            "borderColor": chartcolor,
+            "fill":false,
+            //"spanGaps":false,
+            //"showLine":false,
+            "lineTension":0,
+            
+        }
+        datasets.push(fit_set);
+
+        
+        var chart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+            datasets: datasets
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        display:true,
+                        labelString: "hours"
+                    }]
+                }
+            }
+            });
+        
+        
+            // add the exponential fit
+
+            expfit_vs_time=[];
+
+            for (var i=0;i<subset_vs_time.length;i++) {
+                
+                var current_time_hours = tofit_vs_time[i].x;
+                var localtime = subset_vs_time[i].x;
+                var exp_arg = slope*current_time_hours;
+                var amplitude = y_initial-co2_ambient;
+                var exp_fit = amplitude*Math.exp(exp_arg)+co2_ambient+amplitude*intercept;
+                //var exp_fit = amplitude*Math.exp(exp_arg)+co2_ambient;
+
+                expfit_vs_time.push({"x":localtime,"y":exp_fit});
+            }
+          
+        makeNodeChartSubset('exponential',data,co2_ambient,start,end,expfit_vs_time);
 
 }
 
 function makeNodeChart(docid,co2_vs_time,co2_ambient) {
 
+    
     var canvas = document.getElementById(docid);
     var ctx = document.getElementById(docid).getContext('2d');
             
@@ -250,7 +319,7 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
 
             //console.log(value_vs_time);
 
-            var chartcolor = "green";
+            var chartcolor = "blue";
             var value_set = {
                 type: 'scatter',
                 data:co2_vs_time,
@@ -312,7 +381,7 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
                     });
 
 
-           //var canvas = document.getElementById('myChart');
+           var canvas = document.getElementById(docid);
            var overlay = document.getElementById('overlay');
            var startIndex = 0;
            overlay.width = canvas.width;
@@ -349,7 +418,9 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
                  chart.chartArea.bottom - chart.chartArea.top);
              } else {
                selectionContext.clearRect(0, 0, canvas.width, canvas.height);
-               var x = evt.clientX - rect.left;
+               //console.log(evt.clientX);
+               var x = evt.clientX - rect.left; // crazy add
+               //var x = evt.clientX;
                if (x > chart.chartArea.left) {
                  selectionContext.fillRect(x,
                    chart.chartArea.top,
@@ -366,7 +437,9 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
              drag = false;
              console.log("start:",startIndex);
              console.log("end:",points[0]._index);
-             makeFit('myFit',"234234","co2",200,0,co2_ambient,startIndex,points[0]._index,docid);
+             //console.log(doc_id);
+             makeFit('myFit',co2_vs_time,co2_ambient,startIndex,points[0]._index,docid);
+             
              //console.log('implement filter between ' + options.data.labels[startIndex] + ' and ' + options.data.labels[points[0]._index]);  
            });
 
