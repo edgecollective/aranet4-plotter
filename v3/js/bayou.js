@@ -347,6 +347,7 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
 
 
             var xShift = 315;
+            xShift=0;
            //var canvas = document.getElementById('myChart');
            var overlay = document.getElementById('overlay');
            var startIndex = 0;
@@ -373,7 +374,8 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
            canvas.addEventListener('pointermove', evt => {
 
              const rect = canvas.getBoundingClientRect();
-             console.log("rect.left=",rect.left);
+             console.log("rect_other.left=",rect.left);
+             console.log("chartArea.bottom=",chart.chartArea.bottom);
 
              if (drag) {
                  console.log("dragging!");
@@ -387,8 +389,11 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
                  chart.chartArea.bottom - chart.chartArea.top);
              } else {
                 console.log("just movin!");
+                const rect = canvas.getBoundingClientRect();
                selectionContext.clearRect(0, 0, canvas.width, canvas.height);
                var x = evt.clientX - rect.left-xShift; // crazy add
+               console.log("evtx=",evt.clientX);
+               console.log("chart bottom=",chart.chartArea.bottom);
                if (x > (chart.chartArea.left-xShift)) {
                  selectionContext.fillRect(x,
                    chart.chartArea.top,
