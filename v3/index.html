@@ -35,8 +35,12 @@ document.getElementById("baseline").innerHTML = co2_ambient.toString();
 
 <hr>
 
-<p class="boxsmaller"><b>Step 2: </b>Select a region of graph below to perform exponential fit on that region.</p><canvas id="overlay" width="537" height="179" style="position:absolute;pointer-events:none;"></canvas><canvas id="myChart" width="671" height="223" style="display: block; width: 671px; height: 223px;" class="chartjs-render-monitor"></canvas>
+<p class="boxsmaller"><b>Step 2: </b>Select a region of graph below to perform exponential fit on that region.</p>
 
+<p class="blurb">Note: you should select a region of the graph for which you expect an exponential decay in CO2 level.  E.g.:  a classroom full of students is suddenly vacated for lunch / recess.</p>
+
+
+<canvas id="overlay" width="537" height="179" style="position:absolute;pointer-events:none;"></canvas><canvas id="myChart" width="671" height="223" style="display: block; width: 671px; height: 223px;" class="chartjs-render-monitor"></canvas>
 
 
 <p class="boxsmaller" id="fitval"><b>Estimated ACH</b>:</p>
