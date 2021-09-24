@@ -374,11 +374,11 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
            canvas.addEventListener('pointermove', evt => {
 
              const rect = canvas.getBoundingClientRect();
-             console.log("rect_other.left=",rect.left);
-             console.log("chartArea.bottom=",chart.chartArea.bottom);
+             //console.log("rect_other.left=",rect.left);
+             //console.log("chartArea.bottom=",chart.chartArea.bottom);
 
              if (drag) {
-                 console.log("dragging!");
+                 //console.log("dragging!");
                const rect = canvas.getBoundingClientRect();
                selectionRect.w = (evt.clientX - rect.left - xShift) - selectionRect.startX;
                selectionContext.globalAlpha = 0.5;
@@ -388,12 +388,12 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
                  selectionRect.w,
                  chart.chartArea.bottom - chart.chartArea.top);
              } else {
-                console.log("just movin!");
+                //console.log("just movin!");
                 const rect = canvas.getBoundingClientRect();
                selectionContext.clearRect(0, 0, canvas.width, canvas.height);
                var x = evt.clientX - rect.left-xShift; // crazy add
-               console.log("evtx=",evt.clientX);
-               console.log("chart bottom=",chart.chartArea.bottom);
+               //console.log("evtx=",evt.clientX);
+               //console.log("chart bottom=",chart.chartArea.bottom);
                if (x > (chart.chartArea.left-xShift)) {
                  selectionContext.fillRect(x,
                    chart.chartArea.top,
@@ -408,8 +408,8 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
                intersect: false
              });
              drag = false;
-             console.log("start:",startIndex);
-             console.log("end:",points[0]._index);
+             //console.log("start:",startIndex);
+             //console.log("end:",points[0]._index);
              //console.log(doc_id);
              makeFit('myFit',co2_vs_time,co2_ambient,startIndex,points[0]._index,docid);
              

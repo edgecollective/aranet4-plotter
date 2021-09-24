@@ -1,7 +1,17 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)http://bayou.pvos.org/data/pe7ng4kztt2n/ach/0 -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>aranet4-plotter</title><link rel="stylesheet" href="style.css"><!--script(src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0')--><!--script(src='js/dist/Char.min.js')--><script src="./test_files/luxon.min.js"></script><script src="./test_files/chart.js@2.9.3"></script><script src="./test_files/regression.min.js"></script><!--script(src='https://cdn.jsdelivr.net/npm/luxon@1.22.1')--><script src="./test_files/chartjs-adapter-luxon@0.2.1"></script><script src="./test_files/qrcode.min.js"></script><script src="js/bayou.js"></script><style type="text/css">/* Chart.js */
-@keyframes chartjs-render-animation{from{opacity:.99}to{opacity:1}}.chartjs-render-monitor{animation:chartjs-render-animation 1ms}.chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1}.chartjs-size-monitor-expand>div{position:absolute;width:1000000px;height:1000000px;left:0;top:0}.chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0}</style></head><body>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>aranet4-plotter</title><link rel="stylesheet" href="style.css">
+  <script src='https://cdn.jsdelivr.net/npm/luxon@1.25.0/build/global/luxon.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/chart.js@2.9.3'></script>
+  <script src='https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1'></script>
+  <script src="js/regression.min.js"></script>
+  <script src="js/bayou.js"></script>
+
+  <style type="text/css">
+@keyframes chartjs-render-animation{from{opacity:.99}to{opacity:1}}.chartjs-render-monitor{animation:chartjs-render-animation 1ms}.chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1}.chartjs-size-monitor-expand>div{position:absolute;width:1000000px;height:1000000px;left:0;top:0}.chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0}</style>
+
+</head>
+
+<body>
     <p class="boxsmaller">Aranet4 CSV File Upload:</p>
     <input type="file" id="fileinput" />
 
@@ -9,12 +19,10 @@
     
     <script>var co2_ambient = 413;
 </script><script>function updateBaseline() {
-//console.log("poo");
-//co2_ambient =co2_ambient+100;
-//console.log(co2_ambient);
+
 console.log(document.getElementById("new_baseline").value);
 co2_ambient=parseInt(document.getElementById("new_baseline").value);
-//console.log(co2_ambient);
+
 document.getElementById("baseline").innerHTML = co2_ambient.toString();
 }
 </script>
@@ -49,19 +57,7 @@ ctx.canvas.height = 100;
 ctx = document.getElementById('myFit').getContext('2d');
 ctx.canvas.width  = 300;
 ctx.canvas.height = 100;
-</script><script>QRCode.toCanvas(document.getElementById('qrcode'), 'http://bayou.pvos.org/data/pe7ng4kztt2n', function (error) {
-if (error) console.error(error)
-console.log('success!');
-})
-</script><script>const canvas = document.getElementById("qrcode");
-const canvasdata = canvas.toDataURL();
-const link = document.getElementById("downloadlink");
-link.href = canvasdata;
-link.download = "feed_pe7ng4kztt2n.png";
 </script>
-<script>//var co2_ambient = 400;
-//makeNodeChart('myChart',"pe7ng4kztt2n","co2_ppm",2000,"0",co2_ambient);
-//setupOverlay('myChart');//makeFit('myFit',"pe7ng4kztt2n","co2_ppm",2000,"0",co2_ambient);</script>
 
 <script>
     function csvJSON(csv){
@@ -70,11 +66,6 @@ link.download = "feed_pe7ng4kztt2n.png";
   
   var result = [];
   
-  // NOTE: If your columns contain commas in their values, you'll need
-  // to deal with those before doing the next step 
-  // (you might convert them to &&& or something, then covert them back later)
-  // jsfiddle showing the issue https://jsfiddle.net/
-  //var headers=lines[0].split(",");
   var headers =["Time","CO2","Temp","Humid","Press"];
   for(var i=1;i<lines.length-1;i++){
   
@@ -106,9 +97,7 @@ link.download = "feed_pe7ng4kztt2n.png";
         
         r.onload = function(e) { 
             var contents = e.target.result;
-            //document.write("File Uploaded! <br />" + "name: " + f.name + "<br />" + "content: " + contents + "<br />" + "type: " + f.type + "<br />" + "size: " + f.size + " bytes <br />");
-  
-            // try the parser:
+          
             var p = csvJSON(contents);
             //console.log(p);
             var in_json = csvJSON(contents);
