@@ -346,7 +346,8 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
                     });
 
 
-           var canvas = document.getElementById('myChart');
+            var xShift = 315;
+           //var canvas = document.getElementById('myChart');
            var overlay = document.getElementById('overlay');
            var startIndex = 0;
            overlay.width = canvas.width;
@@ -364,17 +365,20 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
              });
              startIndex = points[0]._index;
              const rect = canvas.getBoundingClientRect();
-             selectionRect.startX = evt.clientX - rect.left;
+             selectionRect.startX = evt.clientX - rect.left- xShift;
              selectionRect.startY = chart.chartArea.top;
              drag = true;
              // save points[0]._index for filtering
            });
            canvas.addEventListener('pointermove', evt => {
-           
+
              const rect = canvas.getBoundingClientRect();
+             console.log("rect.left=",rect.left);
+
              if (drag) {
+                 console.log("dragging!");
                const rect = canvas.getBoundingClientRect();
-               selectionRect.w = (evt.clientX - rect.left) - selectionRect.startX;
+               selectionRect.w = (evt.clientX - rect.left - xShift) - selectionRect.startX;
                selectionContext.globalAlpha = 0.5;
                selectionContext.clearRect(0, 0, canvas.width, canvas.height);
                selectionContext.fillRect(selectionRect.startX,
@@ -382,11 +386,10 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
                  selectionRect.w,
                  chart.chartArea.bottom - chart.chartArea.top);
              } else {
+                console.log("just movin!");
                selectionContext.clearRect(0, 0, canvas.width, canvas.height);
-               //console.log(evt.clientX);
-               var x = evt.clientX - rect.left; // crazy add
-               //var x = evt.clientX;
-               if (x > chart.chartArea.left) {
+               var x = evt.clientX - rect.left-xShift; // crazy add
+               if (x > (chart.chartArea.left-xShift)) {
                  selectionContext.fillRect(x,
                    chart.chartArea.top,
                    1,
