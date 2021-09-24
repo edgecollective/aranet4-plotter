@@ -43,7 +43,7 @@ document.getElementById("baseline").innerHTML = co2_ambient.toString();
 <canvas id="overlay" width="537" height="179" style="position:absolute;pointer-events:none;"></canvas><canvas id="myChart" width="671" height="223" style="display: block; width: 671px; height: 223px;" class="chartjs-render-monitor"></canvas>
 
 
-<p class="boxsmaller" id="fitval"><b>Estimated ACH</b>:</p>
+<p class="boxsmaller_highlight" id="fitval"><b>Estimated ACH</b>:</p>
 
 <p class="blurb"><b>Note</b>: The current version of the code assumes an ambient CO2 level of 413 PPM. A future version will allow user-selection of this value. </p>
 
@@ -51,9 +51,9 @@ document.getElementById("baseline").innerHTML = co2_ambient.toString();
 
 
 
-<p class="boxsmaller">Plot and Fit of <b>ln[(co2-co2_ambient)/co2[t=0]-co2_ambient)]</b></p>
+<p class="boxsmaller_highlight">Plot and Fit of <b>ln[(co2-co2_ambient)/co2[t=0]-co2_ambient)]</b></p>
 
-<p class="boxsmaller" id="linear">  <b>slope</b>; <b>intercept</b>; <b>R2</b></p>
+<p class="boxsmaller_highlight" id="linear">  <b>slope</b>; <b>intercept</b>; <b>R2</b></p>
 
 <canvas id="myFit" width="300" height="100"></canvas>
     
