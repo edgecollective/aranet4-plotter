@@ -12,8 +12,9 @@
 </head>
 
 <body>
-  <p class="banner">Aranet4 ACH estimator v3 <a href="https://github.com/edgecollective/aranet4-plotter/tree/main/v3">(source code)</a></p>
+  <p class="banner"><b>Aranet4 ACH estimator v3</b><br> <a href="https://github.com/edgecollective/aranet4-plotter/tree/main/v3">(source code)</a></p>
 
+  <hr>
 
     <p class="boxsmaller"><b>Step 1: </b>Upload Aranet4 CSV file.<input type="file" id="fileinput" />  </p>
     
@@ -32,15 +33,14 @@ document.getElementById("baseline").innerHTML = co2_ambient.toString();
 
 <hr>
 
-<p class="boxsmaller"><b>Step 2: </b>Select region of graph below to perform exponential fit:</p><canvas id="overlay" width="537" height="179" style="position:absolute;pointer-events:none;"></canvas><canvas id="myChart" width="671" height="223" style="display: block; width: 671px; height: 223px;" class="chartjs-render-monitor"></canvas>
+<p class="boxsmaller"><b>Step 2: </b>Select a region of graph below to perform exponential fit on that region.</p><canvas id="overlay" width="537" height="179" style="position:absolute;pointer-events:none;"></canvas><canvas id="myChart" width="671" height="223" style="display: block; width: 671px; height: 223px;" class="chartjs-render-monitor"></canvas>
 
-<hr>
+
 
 <p class="boxsmaller" id="fitval"><b>Estimated ACH</b>:</p>
 
 <canvas id="exponential" width="300" height="100"></canvas>
 
-<hr>
 
 <p class="boxsmaller">Plot and Fit of <b>ln[(co2-co2_ambient)/co2[t=0]-co2_ambient)]</b></p>
 
