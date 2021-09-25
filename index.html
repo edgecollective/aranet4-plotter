@@ -14,9 +14,11 @@
 <body>
   <p class="banner"><b>Aranet4 ACH estimator v3</b><br> <a href="https://github.com/edgecollective/aranet4-plotter/">(source code)</a></p>
 
+  <p class="blurblarger">A tool for estimating air changes per hour (ACH) using recorded data from the <a href="https://aranet4.com/">Aranet4 CO2 monitor</a>.</p>
+
   <p class="blurb">The <a href="https://aranet4.com/">Aranet4</a> is a popular CO2 monitor that allows users to download historical data as a CSV file.  If your Aranet4 has recorded one or more 'CO2 tracer gas experiments' --  i.e., 'exponential decay' events appopriate for estimating <a href="https://en.wikipedia.org/wiki/Air_changes_per_hour">ACH</a> (air changes per hour) -- you can use the following tool to perform an exponential fit to the relevant timespan in your dataset.</p>
 
-  <p class="blurb">(Read more about 'CO2 tracer gas experiments' <a href="about.html">here</a>.)</p>
+  <p class="blurb">(You can read more about estimating ACH via 'CO2 tracer gas experiments' <a href="about.html">here</a>.)</p>
   
   <hr>
 
@@ -38,7 +40,7 @@ document.getElementById("baseline").innerHTML = co2_ambient.toString();
 
 <hr>
 
-<p class="boxsmaller"><b>Step 2: </b>Select a region of graph below to perform exponential fit on that region.</p>
+<p class="boxsmaller"><b>Step 2: </b>Select a region of graph below to perform an exponential fit on that region.</p>
 
 <p class="blurb"><b>Note</b>: The current version of the code assumes an ambient CO2 level of 413 PPM. A future version will allow user-selection of this value. </p>
 
