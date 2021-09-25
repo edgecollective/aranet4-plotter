@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>aranet4-plotter</title><link rel="stylesheet" href="style.css">
+  <script src='https://cdn.jsdelivr.net/npm/luxon@1.25.0/build/global/luxon.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/chart.js@2.9.3'></script>
+  <script src='https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1'></script>
+  <script src="js/regression.min.js"></script>
+  <script src="js/bayou.js"></script>
+
+  <style type="text/css">
+@keyframes chartjs-render-animation{from{opacity:.99}to{opacity:1}}.chartjs-render-monitor{animation:chartjs-render-animation 1ms}.chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1}.chartjs-size-monitor-expand>div{position:absolute;width:1000000px;height:1000000px;left:0;top:0}.chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0}</style>
+
+</head>
+
+<body>
+  <p class="banner"><b>Aranet4 ACH estimator v3</b><br> <a href="https://github.com/edgecollective/aranet4-plotter/tree/main/v3">(source code)</a></p>
+
+  <p class="blurb">A simple, <a href="https://github.com/edgecollective/aranet4-plotter/tree/main/v3">open source</a> HTML + Javascript application for estimating air changes per hour (ACH) from <a href="https://aranet4.com/?utm_source=google&utm_medium=Aranet4_cpc&utm_campaign=Aranet%20-%20Search%20-%20Aranet&gclid=CjwKCAjw7rWKBhAtEiwAJ3CWLNiJMIqmwEUGzNYp5vXkGZR-Qd4n1snYYPUp7krWJhRv79CuULn3FBoCw3AQAvD_BwE">Aranet4 CO2 monitor</a> data, using the 'CO2 as a tracer gas' technique. (For a nice explanation of this method, please see Dustin Poppendieck's <a href="https://twitter.com/Poppendieck/status/1366055136859070468?s=20"> Twitter thread on ACH estimation using CO2</a>.)
+  <hr>
+
+    <p class="boxsmaller"><b>Step 1: </b>Upload an Aranet4 CSV file.<input type="file" id="fileinput" />  </p>
+    
+    <p class="blurb"><b>Note</b>: For testing, you can also use <a href="example_aranet4_data/toestel1_2021-01-08T17_57_51.csv">this example Aranet4 CSV file</a>.</p>
+
+    <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+    
+    <script>var co2_ambient = 413;
+</script><script>function updateBaseline() {
+
+console.log(document.getElementById("new_baseline").value);
+co2_ambient=parseInt(document.getElementById("new_baseline").value);
+
+document.getElementById("baseline").innerHTML = co2_ambient.toString();
+}
+</script>
+
+<hr>
+
+<p class="boxsmaller"><b>Step 2: </b>Select a region of graph below to perform exponential fit on that region.</p>
+
+<p class="blurb">Click and drag to select a span of time for which you expect an exponential decay in CO2 level;  e.g.:  a classroom previouslly full of students that was suddenly vacated for lunch / recess.</p>
+
+
+<canvas id="overlay" width="537" height="179" style="position:absolute;pointer-events:none;"></canvas><canvas id="myChart" width="671" height="223" style="display: block; width: 671px; height: 223px;" class="chartjs-render-monitor"></canvas>
+
+
+<p class="boxsmaller_highlight" id="fitval"><b>Estimated ACH</b>:</p>
+
+<p class="blurb"><b>Note</b>: The current version of the code assumes an ambient CO2 level of 413 PPM. A future version will allow user-selection of this value. </p>
+
+<canvas id="exponential" width="300" height="100"></canvas>
+
+
+
+<p class="boxsmaller_highlight">Plot and Fit of <b>ln[(co2-co2_ambient)/co2[t=0]-co2_ambient)]</b></p>
+
+<p class="boxsmaller_highlight" id="linear">  <b>slope</b>; <b>intercept</b>; <b>R2</b></p>
+
+<canvas id="myFit" width="300" height="100"></canvas>
+    
+    <script>var ctx = document.getElementById('myChart').getContext('2d');
+ctx.canvas.width  = 300;
+ctx.canvas.height = 100;
+ctx = document.getElementById('overlay').getContext('2d');
+ctx.canvas.width  = 300;
+ctx.canvas.height = 100;
+ctx = document.getElementById('exponential').getContext('2d');
+ctx.canvas.width  = 300;
+ctx.canvas.height = 100;
+ctx = document.getElementById('myFit').getContext('2d');
+ctx.canvas.width  = 300;
+ctx.canvas.height = 100;
+</script>
+
+<script>
+    function csvJSON(csv){
+  
+  var lines=csv.split("\n");
+  
+  var result = [];
+  
+  var headers =["Time","CO2","Temp","Humid","Press"];
+  for(var i=1;i<lines.length-1;i++){
+  
+      var obj = {};
+      var currentline=lines[i].split(",");
+  
+      for(var j=0;j<headers.length;j++){
+          obj[headers[j]] = currentline[j];
+      }
+  
+      result.push(obj);
+  
+  }
+  //console.log(result);
+  
+  return result; //JavaScript object
+  //return JSON.stringify(result); //JSON
+  
+  }
+  </script>
+  
+  <script>
+    function readSingleFile(evt) {
+      var f = evt.target.files[0]; 
+      if (f) {
+  
+  
+        var r = new FileReader();
+        
+        r.onload = function(e) { 
+            var contents = e.target.result;
+          
+            var p = csvJSON(contents);
+            //console.log(p);
+            var in_json = csvJSON(contents);
+  
+            var feed_pubkey = "2323";
+            var plot_param = "co2";
+            var limit = 100;
+            var node_id=0;
+            var co2_ambient = 412;
+  
+            var co2_vs_time = [];
+  
+            for (var i =0; i<p.length;i++) {
+              var thisItem = p[i];
+              var co2StrDouble = thisItem['CO2'];
+              var timeutc = thisItem['Time'];
+              var co2Str = co2StrDouble.replace(/['"]+/g, '');
+                //console.log(parseInt(co2Str));
+                var co2 = parseInt(co2Str);
+  
+                var luxtime = luxon.DateTime.fromFormat(timeutc, "M/d/yyyy h:mm:ss a");
+  
+                //console.log(luxtime.toString());
+    
+                co2_vs_time.push({"t":luxtime,"y":co2})
+              }
+  
+            makeNodeChart('myChart',co2_vs_time,co2_ambient);
+  
+       }
+        r.readAsText(f);
+        //document.write(output);
+      } else { 
+        alert("Failed to load file");
+      }
+    }
+    document.getElementById('fileinput').addEventListener('change', readSingleFile);
+  </script>
+
+
+</body></html>
