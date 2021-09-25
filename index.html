@@ -40,12 +40,14 @@ document.getElementById("baseline").innerHTML = co2_ambient.toString();
 
 <p class="boxsmaller"><b>Step 2: </b>Select a region of graph below to perform exponential fit on that region.</p>
 
+<p class="blurb"><b>Note</b>: The current version of the code assumes an ambient CO2 level of 413 PPM. A future version will allow user-selection of this value. </p>
+
 <canvas id="overlay" width="537" height="179" style="position:absolute;pointer-events:none;"></canvas><canvas id="myChart" width="671" height="223" style="display: block; width: 671px; height: 223px;" class="chartjs-render-monitor"></canvas>
 
 
 <p class="boxsmaller_highlight" id="fitval"><b>Estimated ACH</b>:</p>
 
-<p class="blurb"><b>Note</b>: The current version of the code assumes an ambient CO2 level of 413 PPM. A future version will allow user-selection of this value. </p>
+
 
 <canvas id="exponential" width="300" height="100"></canvas>
 

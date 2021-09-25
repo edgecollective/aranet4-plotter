@@ -209,7 +209,7 @@ function makeFit(docid,data,co2_ambient,start,end,main_docid) {
         var interceptString = (intercept.toFixed(2)).toString();
 
         
-        document.getElementById('fitval').innerHTML = "<b>ACH</b>: "+ACHString;
+        document.getElementById('fitval').innerHTML = "<b>Estimated ACH</b>: "+ACHString;
 
 
         document.getElementById('linear').innerHTML = "<b>slope</b>: "+slopeString+"; <b>intercept</b>: "+interceptString+"; <b>R2</b>:"+r2String;
