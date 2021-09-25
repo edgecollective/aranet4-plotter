@@ -231,7 +231,7 @@ table,tr,th,td{
 }
 
 .blurblarger{
-    background-color: lightgrey;
+    #background-color: lightgrey;
     width:100%;
     padding: 10px;
     font-size: 17px;
