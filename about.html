@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>aranet4-plotter</title><link rel="stylesheet" href="style.css">
+  <script src='https://cdn.jsdelivr.net/npm/luxon@1.25.0/build/global/luxon.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/chart.js@2.9.3'></script>
+  <script src='https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1'></script>
+  <script src="js/regression.min.js"></script>
+  <script src="js/bayou.js"></script>
+
+  <style type="text/css">
+@keyframes chartjs-render-animation{from{opacity:.99}to{opacity:1}}.chartjs-render-monitor{animation:chartjs-render-animation 1ms}.chartjs-size-monitor,.chartjs-size-monitor-expand,.chartjs-size-monitor-shrink{position:absolute;direction:ltr;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1}.chartjs-size-monitor-expand>div{position:absolute;width:1000000px;height:1000000px;left:0;top:0}.chartjs-size-monitor-shrink>div{position:absolute;width:200%;height:200%;left:0;top:0}</style>
+
+</head>
+
+<body>
+  <p class="banner"><b>Aranet4 ACH estimator v3</b><br> <a href="https://github.com/edgecollective/aranet4-plotter/">(source code)</a></p>
+
+  <p class="blurb">In certain circumstances, CO2 in a room can be used as a 'tracer gas' in order to estimate '<a href="https://en.wikipedia.org/wiki/Air_changes_per_hour">air changes per hour</a>' (ACH), a standard measure of ventilation effectiveness in the room. (For a nice explanation of this method, please see Dustin Poppendieck's <a href="https://twitter.com/Poppendieck/status/1366055136859070468?s=20"> Twitter thread on ACH estimation using CO2</a>.) </p>
+    
+    <p class="blurb">For example: if a relatively air-tight room is full of people, and then everyone suddenly leaves for lunch, the CO2 level in the room is expected to decay exponentially; the associated decay rate, measured in hours, is the ACH in the room.  </p>
+
+  <p class="boxsmaller"><a href="/">Back to main page.</a></p>
+
+</body></html>

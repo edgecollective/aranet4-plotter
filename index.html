@@ -14,11 +14,9 @@
 <body>
   <p class="banner"><b>Aranet4 ACH estimator v3</b><br> <a href="https://github.com/edgecollective/aranet4-plotter/">(source code)</a></p>
 
-  <p class="blurb">In certain circumstances, CO2 in a room can be used as a 'tracer gas' in order to estimate '<a href="https://en.wikipedia.org/wiki/Air_changes_per_hour">air changes per hour</a>' (ACH), a standard measure of ventilation effectiveness in the room. (For a nice explanation of this method, please see Dustin Poppendieck's <a href="https://twitter.com/Poppendieck/status/1366055136859070468?s=20"> Twitter thread on ACH estimation using CO2</a>.) </p>
-    
-    <p class="blurb">For example: if a relatively air-tight room is full of people, and then everyone suddenly leaves for lunch, the CO2 level in the room is expected to decay exponentially; the associated decay rate, measured in hours, is the ACH in the room.  </p>
+  <p class="blurb">The <a href="https://aranet4.com/">Aranet4</a> is a popular CO2 monitor that allows users to download historical data as a CSV file.  If your Aranet4 has recorded one or more 'CO2 tracer gas experiments' --  i.e., 'exponential decay' events appopriate for estimating <a href="https://en.wikipedia.org/wiki/Air_changes_per_hour">ACH</a> (air changes per hour) -- you can use the following tool to perform an exponential fit to the relevant timespan in your dataset.</p>
 
-  <p class="blurb">The <a href="https://aranet4.com/">Aranet4</a> is a popular CO2 monitor that allows users to download historical data as a CSV file.  If your Aranet4 has recorded one or more 'CO2 tracer gas experiments' --  i.e., 'exponential decay' events appopriate for estimating ACH -- you can use the following tool to perform an exponential fit to the relevant timespan in your dataset.</p>
+  <p class="blurb">(Read more about 'CO2 tracer gas experiments' <a href="about.html">here</a>.)</p>
   
   <hr>
 
