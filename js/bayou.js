@@ -37,6 +37,8 @@ function makeNodeChartSubset(docid,data,co2_ambient,start,stop,expofit_vs_time) 
                 //"label":feed_shortname,
                 borderColor: chartcolor,
                 fill:true,
+                pointRadius: 2,
+
                 //"spanGaps":false,
                 //"showLine":false,
                 //lineTension:0
@@ -298,6 +300,8 @@ function makeNodeChart(docid,co2_vs_time,co2_ambient) {
                 label:"CO2 PPM",
                 borderColor: chartcolor,
                 fill:true,
+                //pointStyle: 'rectRot',
+                pointRadius: 2,
         
             }
             datasets.push(value_set);
