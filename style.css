@@ -51,7 +51,7 @@ header{
     font-size: 18px;
     width: fit-content(10em);
     margin-left: 5px;
-    margin-bottom: 5px;
+    #margin-bottom: 5px;
 }
 
 
@@ -233,12 +233,12 @@ table,tr,th,td{
 .blurblarger{
     #background-color: lightgrey;
     width:100%;
-    padding: 10px;
+    padding: 5px;
     font-size: 17px;
     line-height: 1.4;
-    margin-left: 30px;
+    margin-left: 20px;
     max-width: 600px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .tinyblurb{

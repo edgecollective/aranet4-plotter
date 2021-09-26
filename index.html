@@ -13,19 +13,19 @@
 
 <body>
   
-  <p class="banner"><b>Aranet4 ACH estimator v3</b><br> <a href="https://github.com/edgecollective/aranet4-plotter/">(source code)</a></p>
+  <p class="banner"><b>Assessing Ventilation Rate (in ACH) using the Aranet4 CO2 Monitor</b><br> <a href="https://github.com/edgecollective/aranet4-plotter/">source code</a></p>
 
-  <p class="blurblarger">An easy-to-use tool for estimating air changes per hour (ACH) using recorded data from an <a href="https://aranet4.com/">Aranet4 CO2 monitor</a>.</p>
+  <p class="blurblarger">An easy-to-use tool for estimating air changes per hour (<a href="https://en.wikipedia.org/wiki/Air_changes_per_hour">ACH</a>) using recorded data from an <a href="https://aranet4.com/">Aranet4 CO2 monitor</a>.</p>
 
-  <p class="blurb">The <a href="https://aranet4.com/">Aranet4</a> is a popular CO2 monitor that allows users to download historical data as a CSV file. If your Aranet4 has recorded one or more 'CO2 tracer gas experiments' --  i.e., 'exponential decay' events appopriate for estimating <a href="https://en.wikipedia.org/wiki/Air_changes_per_hour">ACH</a> (air changes per hour) -- you can use the following tool to perform an exponential fit to the relevant timespan in your dataset.</p>
+  <p class="blurb">The <a href="https://aranet4.com/">Aranet4</a> is a popular CO2 monitor that allows users to download historical CO2 data as a CSV file. If your Aranet4 has recorded one or more 'CO2 tracer gas experiments', you can use the following tool to perform an exponential fit to the relevant timespan in your dataset.</p>
 
-  <p class="blurb">You can read more about estimating ACH via 'CO2 tracer gas experiments' <a href="about.html">here</a>.</p>
+  <p class="blurb">For a great explanation of the 'CO2 tracer gas' method -- and associated caveats -- please see <a href="https://twitter.com/Poppendieck/status/1366055136859070468?s=20">this Twitter thread by Dustin Poppendieck</a>.</p>
   
   <hr>
 
-    <p class="boxsmaller"><b>Step 1: </b>Upload an Aranet4 CSV file.<input type="file" id="fileinput" />  </p>
+    <p class="boxsmaller"><b>Step 1: </b>Upload an Aranet4 CSV file (or use <a href="example_aranet4_data/toestel1_2021-01-08T17_57_51.csv">this example file</a>).<input type="file" id="fileinput" /></p>
     
-    <p class="blurb"><b>Note</b>: For testing, you can also use <a href="example_aranet4_data/toestel1_2021-01-08T17_57_51.csv">this example Aranet4 CSV file</a>.</p>
+    <p class="blurb"><b>Note on CSV format</b>: this upload tool assumes that the first two columns in the exported Aranet4 CSV file are the timestamp (using the format: "M/d/yyyy h:mm:ss a", e.g. "1/5/2021 6:03:51 AM") and the CO2 value (in PPM).</p>
 
     <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
     
@@ -43,7 +43,7 @@ document.getElementById("baseline").innerHTML = co2_ambient.toString();
 
 <p class="boxsmaller"><b>Step 2: </b>Select a region of graph below to perform an exponential fit on that region.</p>
 
-<p class="blurb"><b>Note</b>: The current version of the code assumes an ambient CO2 level of 420 PPM. A future version will allow user-selection of this value. </p>
+<p class="blurb"><b>Note on ambient CO2 level</b>: The exponential fit currently assumes an ambient CO2 level of 420 PPM; a future version of the code may allow user-selection of this value. </p>
 
 <canvas id="overlay" width="537" height="179" style="position:absolute;pointer-events:none;"></canvas><canvas id="myChart" width="671" height="223" style="display: block; width: 671px; height: 223px;" class="chartjs-render-monitor"></canvas>
 
@@ -56,9 +56,9 @@ document.getElementById("baseline").innerHTML = co2_ambient.toString();
 
 
 
-<p class="boxsmaller_highlight">Plot and Fit of <b>ln[(co2-co2_ambient)/co2[t=0]-co2_ambient)]</b></p>
+<p class="boxsmaller_highlight">Plot and Linear Fit of <b>ln[(co2-co2_ambient)/co2[t=0]-co2_ambient)]</b>:</p>
 
-<p class="boxsmaller_highlight" id="linear">  <b>slope</b>; <b>intercept</b>; <b>R2</b></p>
+<p class="boxsmaller_highlight" id="linear">Fit parameters: <b>Slope</b>; <b>Intercept</b>; <b>R2</b></p>
 
 <canvas id="myFit" width="300" height="100"></canvas>
     
