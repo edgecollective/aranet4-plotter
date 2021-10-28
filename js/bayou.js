@@ -212,7 +212,7 @@ function makeFit(docid,data,co2_ambient,start,end,main_docid) {
         document.getElementById('fitval').innerHTML = "<b>Estimated ACH</b>: "+ACHString;
 
 
-        document.getElementById('linear').innerHTML = "Fit parameters: <b>Slope</b>: "+slopeString+"; <b>Intercept</b>: "+interceptString+"; <b>R2</b>:"+r2String;
+        document.getElementById('linear').innerHTML = "Fit parameters: <b>co2_ppm</b>: "+co2_ambient+"; <b>Slope</b>: "+slopeString+"; <b>Intercept</b>: "+interceptString+"; <b>R2</b>:"+r2String;
         
         var chartcolor = "blue";
         var tofit_set = {
