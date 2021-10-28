@@ -15,8 +15,6 @@
   
   <p class="banner"><b>Assessing Ventilation Rate (in <a href="https://en.wikipedia.org/wiki/Air_changes_per_hour">ACH</a>) using the <a href="https://aranet4.com/">Aranet4 CO2 monitor</a></b><br>(<a href="https://github.com/edgecollective/aranet4-plotter">source code</a>, GPL v3.0)</p>
 
-  <!--<p class="blurblarger"></p>-->
-
   <p class="blurb">The <a href="https://aranet4.com/">Aranet4</a> is a popular CO2 monitor that allows users to download historical CO2 data as a CSV file. If your Aranet4 has recorded one or more 'CO2 tracer gas experiments' in a space, you can use this tool to estimate the air changes per hour (<a href="https://en.wikipedia.org/wiki/Air_changes_per_hour">ACH</a>) for that space by performing an exponential fit to the relevant timespan in your dataset.</p>
 
   <p class="blurb">For a great explanation of the 'CO2 tracer gas' method -- and associated caveats -- please see <a href="https://twitter.com/Poppendieck/status/1366055136859070468?s=20">this Twitter thread by Dustin Poppendieck</a>.</p>
@@ -142,6 +140,17 @@ ctx.canvas.height = 100;
                 co2_vs_time.push({"t":luxtime,"y":co2})
               }
   
+
+              const queryString = window.location.search;
+              //console.log(queryString);
+
+              const urlParams = new URLSearchParams(queryString);
+              const ambient = urlParams.get('ambient')
+              //console.log(ambient);
+              if(ambient>100) {
+                co2_ambient=ambient;
+              }
+              console.log(co2_ambient);
             makeNodeChart('myChart',co2_vs_time,co2_ambient);
   
        }
