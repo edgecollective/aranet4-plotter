@@ -17,10 +17,12 @@
 
   <p class="blurb">The <a href="https://aranet4.com/">Aranet4</a> is a popular CO2 monitor that allows users to download historical CO2 data as a CSV file. If your Aranet4 has recorded one or more 'CO2 tracer gas experiments' in a space, you can use this tool to estimate the air changes per hour (<a href="https://en.wikipedia.org/wiki/Air_changes_per_hour">ACH</a>) for that space by performing an exponential fit to the relevant timespan in your dataset.</p>
 
-  <p class="blurb">For a great explanation of the 'CO2 tracer gas' method -- and associated caveats -- please see <a href="https://twitter.com/Poppendieck/status/1366055136859070468?s=20">this Twitter thread by Dustin Poppendieck</a>.</p>
-  
-  <hr>
+  <!--  <p class="blurb">For a great explanation of the 'CO2 tracer gas' method -- and associated caveats -- please see <a href="https://twitter.com/Poppendieck/status/1366055136859070468?s=20">this Twitter thread by Dustin Poppendieck</a>.</p> -->
 
+  <p class="blurb"><iframe width="560" height="315" src="https://www.youtube.com/embed/J9vXScerweY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </p>
+
+  <hr>
     <p class="boxsmaller"><b>Step 1: </b>Upload an Aranet4 CSV file (or use <a href="example_aranet4_data/toestel1_2021-01-08T17_57_51.csv">this example file</a>).<input type="file" id="fileinput" /></p>
     
     <p class="blurb"><b>Note</b>: This upload tool assumes that the first two columns in your Aranet4 CSV file are the timestamp (using the format: "M/d/yyyy h:mm:ss a", e.g. "1/5/2021 6:03:51 AM") and the CO2 value (in PPM), respectively.</p>
