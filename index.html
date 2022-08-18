@@ -135,8 +135,8 @@ ctx.canvas.height = 100;
                 //console.log(parseInt(co2Str));
                 var co2 = parseInt(co2Str);
   
-                var luxtime = luxon.DateTime.fromFormat(timeutc, "M/d/yyyy h:mm:ss a");
-  
+                //var luxtime = luxon.DateTime.fromFormat(timeutc, "M/d/yyyy h:mm:ss a");
+                var luxtime = luxon.DateTime.fromFormat(timeutc, "d/M/yyyy h:mm:ss a");
                 //console.log(luxtime.toString());
     
                 co2_vs_time.push({"t":luxtime,"y":co2})
